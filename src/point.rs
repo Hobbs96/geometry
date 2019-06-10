@@ -1,3 +1,6 @@
+pub mod constants;
+use crate::constants::EPSILON;
+
 pub struct Point {
     pub w: f64,
     pub x: f64,

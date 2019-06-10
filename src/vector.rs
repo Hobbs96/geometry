@@ -13,3 +13,14 @@ pub fn build_vector(x: f64, y: f64, z: f64) -> Vector {
         z
     }
 }
+
+pub fn build_point(x: f64, y: f64, z: f64) -> Vector {
+    Vector {
+        w: 1.0,
+        x,
+        y,
+        z
+    }
+}
+
+/* TODO: need to impl for add, and should use the float-cmp crate (on github) */

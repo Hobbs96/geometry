@@ -1,5 +1,7 @@
 use core::ops::Add;
+use core::ops::Sub;
 
+#[derive(Copy, Clone)]
 pub struct Vector {
     pub w: f64,
     pub x: f64,
@@ -32,6 +34,19 @@ impl Vector {
         }
         else {
             false
+        }
+    }
+}
+
+impl Sub for Vector {
+    type Output = Vector;
+
+    fn sub(self, other: Self) -> Vector {
+        Vector {
+            w: self.w - other.w,
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
         }
     }
 }

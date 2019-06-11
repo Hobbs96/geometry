@@ -54,4 +54,19 @@ mod vector_tests {
 
         assert!(origin.is_point());
     }
+
+    #[test]
+    fn point_minus_point() {
+        let p1 = build_point(1.0, 2.9, 3.4);
+        let p2 = build_point(3.4, 6.3, 2.7);
+        let v1 = p1 - p2;
+        let p4 = p2 - p1;
+
+        //currently failing because I'm not using a fuzzy comp
+        assert_eq!(v1.x, -2.4);
+        assert_eq!(v1.y, -3.4);
+        assert_eq!(v1.z, 0.7);
+        assert_eq!(v1.w, 0.0);
+        assert!(!v1.is_point()); 
+    }
 }

@@ -1,9 +1,10 @@
+extern crate float_cmp;
 pub mod vector;
 
 #[cfg(test)]
 mod vector_tests {
-    use crate::vector::build_vector;
     use crate::vector::build_point;
+    use crate::vector::build_vector;
 
     #[test]
     fn point_w_is_one() {
@@ -12,28 +13,28 @@ mod vector_tests {
     }
 
     #[test]
-   fn vector_plus_point() {
-       let p1 = build_point(1.0, 1.0, 1.0);
-       let v1 = build_vector(1.0, 1.0, 1.0);
-       let p2 = p1 + v1;
+    fn vector_plus_point() {
+        let p1 = build_point(1.0, 1.0, 1.0);
+        let v1 = build_vector(1.0, 1.0, 1.0);
+        let p2 = p1 + v1;
 
-       assert_eq!(p2.x, 2.0);
-       assert_eq!(p2.y, 2.0);
-       assert_eq!(p2.z, 2.0);
-       assert_eq!(p2.w, 1.0);
-   }
+        assert_eq!(p2.x, 2.0);
+        assert_eq!(p2.y, 2.0);
+        assert_eq!(p2.z, 2.0);
+        assert_eq!(p2.w, 1.0);
+    }
 
-   #[test]
-   fn vector_plus_vector() {
-       let v1 = build_vector(3.0, 2.0, 1.0);
-       let v2 = build_vector(1.0, 2.0, 3.0);
-       let v3 = v1 + v2;
+    #[test]
+    fn vector_plus_vector() {
+        let v1 = build_vector(3.0, 2.0, 1.0);
+        let v2 = build_vector(1.0, 2.0, 3.0);
+        let v3 = v1 + v2;
 
-       assert_eq!(v3.x, 4.0);
-       assert_eq!(v3.y, 4.0);
-       assert_eq!(v3.z, 4.0);
-       assert_eq!(v3.w, 0.0);
-   }
+        assert_eq!(v3.x, 4.0);
+        assert_eq!(v3.y, 4.0);
+        assert_eq!(v3.z, 4.0);
+        assert_eq!(v3.w, 0.0);
+    }
     #[test]
     fn vector_w_is_zero() {
         let origin = build_vector(0.0, 0.0, 0.0);
@@ -67,6 +68,6 @@ mod vector_tests {
         assert_eq!(v1.y, -3.4);
         assert_eq!(v1.z, 0.7);
         assert_eq!(v1.w, 0.0);
-        assert!(!v1.is_point()); 
+        assert!(!v1.is_point());
     }
 }

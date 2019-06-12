@@ -5,3 +5,4 @@ authors = ["Clark Lindsay <clarklindsay96@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+float-cmp = "0.5.0"

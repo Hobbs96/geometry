@@ -10,7 +10,7 @@ mod vector_tests {
     #[test]
     fn point_w_is_one() {
         let origin = build_point(0.0, 0.0, 0.0);
-        assert_eq!(origin.w, 1.0);
+        assert!(origin.is_point());
     }
 
     #[test]
@@ -22,7 +22,7 @@ mod vector_tests {
         assert!(p2.x.approx_eq(2.0, (0.0, 2)));
         assert!(p2.y.approx_eq(2.0, (0.0, 2)));
         assert!(p2.z.approx_eq(2.0, (0.0, 2)));
-        assert!(p2.w.approx_eq(1.0, (0.0, 2)));
+        assert!(p2.is_point());
     }
 
     #[test]
@@ -33,12 +33,12 @@ mod vector_tests {
         assert!(v3.x.approx_eq(4.0, (0.0, 2)));
         assert!(v3.y.approx_eq(4.0, (0.0, 2)));
         assert!(v3.z.approx_eq(4.0, (0.0, 2)));
-        assert!(v3.w.approx_eq(0.0, (0.0, 2)));
+        assert!(!v3.is_point());
     }
     #[test]
     fn vector_w_is_zero() {
         let origin = build_vector(0.0, 0.0, 0.0);
-        assert_eq!(origin.w, 0.0);
+        assert!(!origin.is_point());
     }
 
     #[test]
@@ -61,13 +61,17 @@ mod vector_tests {
         let p1 = build_point(1.0, 2.9, 3.4);
         let p2 = build_point(3.4, 6.3, 2.7);
         let v1 = p1 - p2;
-        let p4 = p2 - p1;
+        let v2 = p2 - p1;
 
         //currently failing because I'm not using a fuzzy comp
         assert!(v1.x.approx_eq(-2.4, (0.0, 2)));
         assert!(v1.y.approx_eq(-3.4, (0.0, 2)));
         assert!(v1.z.approx_eq(0.7, (0.0, 2)));
-        assert!(v1.w.approx_eq(0.0, (0.0, 2)));
         assert!(!v1.is_point());
+
+        assert!(v2.x.approx_eq(2.4, (0.0, 2)));
+        assert!(v2.y.approx_eq(3.4, (0.0, 2)));
+        assert!(v2.z.approx_eq(-0.7, (0.0, 2)));
+        assert!(!v2.is_point())
     }
 }

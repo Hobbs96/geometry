@@ -99,13 +99,35 @@ mod vector_tests {
     }
 
     #[test]
-    fn scalar_multiply_vector() {
+    fn scalar_vector_multiplication() {
         let v1 = build_vector(1.0, 2.0, 3.0);
         let v2 = v1 * 3.0;
 
         assert!(v2.x.approx_eq(3.0, (0.0, 2)));
         assert!(v2.y.approx_eq(6.0, (0.0, 2)));
         assert!(v2.z.approx_eq(9.0, (0.0, 2)));
+        assert!(!v2.is_point());
+    }
+
+    #[test]
+    fn fractional_scalar_vector_multiplication() {
+        let v1 = build_vector(2.0, 1.0, 3.5);
+        let v2 = v1 * 0.5;
+
+        assert!(v2.x.approx_eq(1.0, (0.0, 2)));
+        assert!(v2.y.approx_eq(0.5, (0.0, 2)));
+        assert!(v2.z.approx_eq(1.75, (0.0, 2)));
+        assert!(!v2.is_point());
+    }
+
+    #[test]
+    fn scalar_vector_division() {
+        let v1 = build_vector(2.0, 1.0, 3.5);
+        let v2 = v1 / 2.0;
+
+        assert!(v2.x.approx_eq(1.0, (0.0, 2)));
+        assert!(v2.y.approx_eq(0.5, (0.0, 2)));
+        assert!(v2.z.approx_eq(1.75, (0.0, 2)));
         assert!(!v2.is_point());
     }
 }

@@ -63,5 +63,4 @@ impl Add for Vector {
         }
     }
 }
-/* TODO: need to impl for add, and should use the float-cmp crate (on github) */
 //also need to add an is_point() method

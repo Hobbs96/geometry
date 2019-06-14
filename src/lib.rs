@@ -5,6 +5,7 @@ pub mod vector;
 mod vector_tests {
     use crate::vector::build_point;
     use crate::vector::build_vector;
+    use crate::float_cmp::ApproxEq;
 
     #[test]
     fn point_w_is_one() {
@@ -29,11 +30,10 @@ mod vector_tests {
         let v1 = build_vector(3.0, 2.0, 1.0);
         let v2 = build_vector(1.0, 2.0, 3.0);
         let v3 = v1 + v2;
-
-        assert_eq!(v3.x, 4.0);
-        assert_eq!(v3.y, 4.0);
-        assert_eq!(v3.z, 4.0);
-        assert_eq!(v3.w, 0.0);
+        assert!(v3.x.approx_eq(4.0, (0.0, 2)));
+        assert!(v3.y.approx_eq(4.0, (0.0, 2)));
+        assert!(v3.z.approx_eq(4.0, (0.0, 2)));
+        assert!(v3.w.approx_eq(0.0, (0.0, 2)));
     }
     #[test]
     fn vector_w_is_zero() {

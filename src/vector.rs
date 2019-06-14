@@ -5,7 +5,7 @@ use core::ops::Mul;
 use core::ops::Div;
 use crate::float_cmp::ApproxEq;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct Vector {
     pub w: f64,
     pub x: f64,
@@ -65,6 +65,18 @@ impl Vector {
         self.x * other.x +
         self.y * other.y +
         self.z * other.z
+    }
+
+    pub fn cross(&self, other: Self) -> Self {
+        if self.is_point() {
+            panic!("cross, the cross-product method, should not be called on a point");
+        }
+        Self {
+            w: self.w,
+            x: self.y * other.z - self.z * other.y,
+            y: self.z * other.x - self.x * other.z,
+            z: self.x * other.y - self.y * other.x
+        }
     }
 }
 

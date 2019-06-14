@@ -19,10 +19,10 @@ mod vector_tests {
         let v1 = build_vector(1.0, 1.0, 1.0);
         let p2 = p1 + v1;
 
-        assert_eq!(p2.x, 2.0);
-        assert_eq!(p2.y, 2.0);
-        assert_eq!(p2.z, 2.0);
-        assert_eq!(p2.w, 1.0);
+        assert!(p2.x.approx_eq(2.0, (0.0, 2)));
+        assert!(p2.y.approx_eq(2.0, (0.0, 2)));
+        assert!(p2.z.approx_eq(2.0, (0.0, 2)));
+        assert!(p2.w.approx_eq(1.0, (0.0, 2)));
     }
 
     #[test]
@@ -64,10 +64,10 @@ mod vector_tests {
         let p4 = p2 - p1;
 
         //currently failing because I'm not using a fuzzy comp
-        assert_eq!(v1.x, -2.4);
-        assert_eq!(v1.y, -3.4);
-        assert_eq!(v1.z, 0.7);
-        assert_eq!(v1.w, 0.0);
+        assert!(v1.x.approx_eq(-2.4, (0.0, 2)));
+        assert!(v1.y.approx_eq(-3.4, (0.0, 2)));
+        assert!(v1.z.approx_eq(0.7, (0.0, 2)));
+        assert!(v1.w.approx_eq(0.0, (0.0, 2)));
         assert!(!v1.is_point());
     }
 }

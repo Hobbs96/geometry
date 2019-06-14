@@ -1,5 +1,6 @@
 use core::ops::Add;
 use core::ops::Sub;
+use crate::float_cmp::ApproxEq;
 
 #[derive(Copy, Clone)]
 pub struct Vector {
@@ -29,7 +30,7 @@ pub fn build_point(x: f64, y: f64, z: f64) -> Vector {
 
 impl Vector {
     pub fn is_point(&self) -> bool {
-        if self.w != 0.0 {
+        if self.w.approx_eq(1.0, (0.0, 2)) {
             true
         }
         else {

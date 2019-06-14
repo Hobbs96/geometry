@@ -148,10 +148,27 @@ mod vector_tests {
         let v2 = build_vector(0.0, 1.0, 0.0);
         let v3 = build_vector(1.0, 0.0, 0.0);
         let v4 = build_vector(3.0, 4.0, 5.0);
+        let v5 = build_vector(-3.0, -4.0, -5.0);
 
         assert!(v1.magnitude().approx_eq(1.0, (0.0, 2)));
         assert!(v2.magnitude().approx_eq(1.0, (0.0, 2)));
         assert!(v3.magnitude().approx_eq(1.0, (0.0, 2)));
         assert!(v4.magnitude().approx_eq(50.0_f64.sqrt(), (0.0, 2)));
+        assert!(v5.magnitude().approx_eq(50.0_f64.sqrt(), (0.0, 2)));
+    }
+
+    #[test]
+    fn vector_normalization() {
+       let v1 = build_vector(4.0, 0.0, 0.0);
+       let v2 = v1.normalized();
+       let v3 = build_vector(1.0, 2.0, 3.0);
+       let v4 = v3.normalized();
+
+        assert!(v2.x.approx_eq(1.0, (0.0, 2)));
+        assert!(v2.y.approx_eq(0.0, (0.0, 2)));
+        assert!(v2.z.approx_eq(0.0, (0.0, 2)));
+        assert!(v2.magnitude().approx_eq(1.0, (0.0, 2)));
+
+        assert!(v4.magnitude().approx_eq(1.0, (0.0, 2)));
     }
 }

@@ -46,6 +46,16 @@ impl Vector {
         self.y.powi(2) +
         self.z.powi(2)).sqrt()
     }
+
+    pub fn normalized(&self) -> Vector {
+        let magnitude = self.magnitude();
+        Vector {
+            w: self.w,
+            x: self.x / magnitude,
+            y: self.y / magnitude,
+            z: self.z / magnitude
+        }
+    }
 }
 
 impl Sub for Vector {

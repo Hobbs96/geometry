@@ -74,4 +74,27 @@ mod vector_tests {
         assert!(v2.z.approx_eq(-0.7, (0.0, 2)));
         assert!(!v2.is_point())
     }
+
+    #[test]
+    fn subtract_from_zero_vector() {
+       let v1 = build_vector(3.0, 4.0, 5.0);
+       let origin = build_vector(0.0, 0.0, 0.0);
+       let v2 = origin - v1;
+
+       assert!(v2.x.approx_eq(-3.0, (0.0, 2)));
+       assert!(v2.y.approx_eq(-4.0, (0.0, 2)));
+       assert!(v2.z.approx_eq(-5.0, (0.0, 2)));
+       assert!(!v2.is_point());
+    }
+
+    #[test]
+    fn negate_vector() {
+        let v1 = build_vector(1.0, 2.0, 3.0);
+        let v2 = -v1;
+        
+        assert!(v2.x.approx_eq(-1.0, (0.0, 2)));
+        assert!(v2.y.approx_eq(-2.0, (0.0, 2)));
+        assert!(v2.z.approx_eq(-3.0, (0.0, 2)));
+        assert!(!v2.is_point());
+    }
 }

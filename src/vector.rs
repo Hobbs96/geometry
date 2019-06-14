@@ -1,5 +1,6 @@
 use core::ops::Add;
 use core::ops::Sub;
+use core::ops::Neg;
 use crate::float_cmp::ApproxEq;
 
 #[derive(Copy, Clone)]
@@ -64,4 +65,16 @@ impl Add for Vector {
         }
     }
 }
-//also need to add an is_point() method
+
+impl Neg for Vector {
+    type Output = Self;
+
+    fn neg(self) -> Self {
+        Self {
+            w: -self.w,
+            x: -self.x,
+            y: -self.y,
+            z: -self.z
+        }
+    }
+}

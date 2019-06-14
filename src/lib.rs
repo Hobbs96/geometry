@@ -141,4 +141,17 @@ mod vector_tests {
         assert!(v2.z.approx_eq(7.0, (0.0, 2)));
         assert!(!v2.is_point());
     }
+
+    #[test]
+    fn vector_magnitude() {
+        let v1 = build_vector(0.0, 0.0, 1.0);
+        let v2 = build_vector(0.0, 1.0, 0.0);
+        let v3 = build_vector(1.0, 0.0, 0.0);
+        let v4 = build_vector(3.0, 4.0, 5.0);
+
+        assert!(v1.magnitude().approx_eq(1.0, (0.0, 2)));
+        assert!(v2.magnitude().approx_eq(1.0, (0.0, 2)));
+        assert!(v3.magnitude().approx_eq(1.0, (0.0, 2)));
+        assert!(v4.magnitude().approx_eq(50.0_f64.sqrt(), (0.0, 2)));
+    }
 }

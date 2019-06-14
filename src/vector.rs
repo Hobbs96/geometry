@@ -40,6 +40,12 @@ impl Vector {
             false
         }
     }
+
+    pub fn magnitude(&self) -> f64 {
+        (self.x.powi(2) +
+        self.y.powi(2) +
+        self.z.powi(2)).sqrt()
+    }
 }
 
 impl Sub for Vector {

@@ -101,7 +101,7 @@ mod vector_tests {
     #[test]
     fn scalar_multiply_vector() {
         let v1 = build_vector(1.0, 2.0, 3.0);
-        let v2 = v1 * 3;
+        let v2 = v1 * 3.0;
 
         assert!(v2.x.approx_eq(3.0, (0.0, 2)));
         assert!(v2.y.approx_eq(6.0, (0.0, 2)));

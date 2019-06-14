@@ -1,6 +1,7 @@
 use core::ops::Add;
 use core::ops::Sub;
 use core::ops::Neg;
+use core::ops::Mul;
 use crate::float_cmp::ApproxEq;
 
 #[derive(Copy, Clone)]
@@ -75,6 +76,19 @@ impl Neg for Vector {
             x: -self.x,
             y: -self.y,
             z: -self.z
+        }
+    }
+}
+
+impl Mul<f64> for Vector {
+    type Output = Self;
+
+    fn mul(self, scalar: f64) -> Self {
+        Self {
+            w: self.w * scalar,
+            x: self.x * scalar,
+            y: self.y * scalar,
+            z: self.z * scalar,
         }
     }
 }

@@ -97,4 +97,15 @@ mod vector_tests {
         assert!(v2.z.approx_eq(-3.0, (0.0, 2)));
         assert!(!v2.is_point());
     }
+
+    #[test]
+    fn scalar_multiply_vector() {
+        let v1 = build_vector(1.0, 2.0, 3.0);
+        let v2 = v1 * 3;
+
+        assert!(v2.x.approx_eq(3.0, (0.0, 2)));
+        assert!(v2.y.approx_eq(6.0, (0.0, 2)));
+        assert!(v2.z.approx_eq(9.0, (0.0, 2)));
+        assert!(!v2.is_point());
+    }
 }

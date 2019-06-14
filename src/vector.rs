@@ -68,6 +68,17 @@ impl Vector {
     }
 }
 
+impl PartialEq for Vector {
+    fn eq(&self, other: &Self) -> bool {
+        self.w.approx_eq(other.w, (0.0, 2)) &&
+        self.x.approx_eq(other.x, (0.0, 2)) &&
+        self.y.approx_eq(other.y, (0.0, 2)) &&
+        self.z.approx_eq(other.z, (0.0, 2))
+    }
+}
+
+impl Eq for Vector {}
+
 impl Sub for Vector {
     type Output = Vector;
 

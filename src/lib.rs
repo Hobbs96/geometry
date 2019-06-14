@@ -188,4 +188,13 @@ mod vector_tests {
 
         assert!(p1.dot(p1).approx_eq(14.0, (0.0, 2)));
     }
+
+    #[test]
+    fn cross_product() {
+        let v1 = build_vector(1.0, 2.0, 3.0);
+        let v2 = build_vector(2.0, 3.0, 4.0);
+        let v3 = v1.cross(v2);
+        let v4 = v2.cross(v1);
+
+    }
 }

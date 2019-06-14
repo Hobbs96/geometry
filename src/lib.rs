@@ -130,4 +130,15 @@ mod vector_tests {
         assert!(v2.z.approx_eq(1.75, (0.0, 2)));
         assert!(!v2.is_point());
     }
+
+    #[test]
+    fn fractional_scalar_vector_division() {
+        let v1 = build_vector(2.0, 1.0, 3.5);
+        let v2 = v1 / 0.5;
+
+        assert!(v2.x.approx_eq(4.0, (0.0, 2)));
+        assert!(v2.y.approx_eq(2.0, (0.0, 2)));
+        assert!(v2.z.approx_eq(7.0, (0.0, 2)));
+        assert!(!v2.is_point());
+    }
 }

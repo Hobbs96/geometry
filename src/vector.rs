@@ -47,14 +47,24 @@ impl Vector {
         self.z.powi(2)).sqrt()
     }
 
-    pub fn normalized(&self) -> Vector {
+    pub fn normalized(&self) -> Self {
         let magnitude = self.magnitude();
-        Vector {
-            w: self.w,
+        Self {
+            w: self.w / magnitude,
             x: self.x / magnitude,
             y: self.y / magnitude,
             z: self.z / magnitude
         }
+    }
+
+    pub fn dot(&self, other: Self) -> f64 {
+        if self.is_point() {
+            panic!("dot, the dot-product method, should not be called on a point");
+        }
+        self.w * other.w +
+        self.x * other.x +
+        self.y * other.y +
+        self.z * other.z
     }
 }
 

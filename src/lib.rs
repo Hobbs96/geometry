@@ -171,4 +171,21 @@ mod vector_tests {
 
         assert!(v4.magnitude().approx_eq(1.0, (0.0, 2)));
     }
+
+    #[test]
+    fn dot_product() {
+        let v1 = build_vector(1.0, 2.0, 3.0);
+        let v2 = build_vector(2.0, 3.0, 4.0);
+        let v1_dot_v2 = v1.dot(v2);
+
+        assert!(v1_dot_v2.approx_eq(20.0, (0.0, 2)));
+    }
+
+    #[test]
+    #[should_panic]
+    fn dot_product_panics_for_point() {
+        let p1 = build_point(1.0, 2.0, 3.0);
+
+        assert!(p1.dot(p1).approx_eq(14.0, (0.0, 2)));
+    }
 }

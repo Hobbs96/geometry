@@ -7,7 +7,7 @@ use crate::float_cmp::ApproxEq;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Vector {
-    pub w: f64,
+    w: f64,
     pub x: f64,
     pub y: f64,
     pub z: f64
@@ -307,8 +307,10 @@ mod vector_tests {
         let v1 = build_vector(1.0, 2.0, 3.0);
         let v2 = build_vector(2.0, 3.0, 4.0);
         let v1_dot_v2 = v1.dot(v2);
+        let v2_dot_v1 = v2.dot(v1);
 
         assert!(v1_dot_v2.approx_eq(20.0, (0.0, 2)));
+        assert!(v2_dot_v1.approx_eq(20.0, (0.0, 2)));
     }
 
     #[test]
@@ -325,8 +327,12 @@ mod vector_tests {
         let v2 = build_vector(2.0, 3.0, 4.0);
         let v3 = v1.cross(v2);
         let v4 = v2.cross(v1);
+        let v5 = (-v1).cross(v2);
+        let v6 = (-v2).cross(v1);
 
         assert_eq!(v3, build_vector(-1.0, 2.0, -1.0));
         assert_eq!(v4, build_vector(1.0, -2.0, 1.0));
+        assert_eq!(v5, build_vector(1.0, -2.0, 1.0));
+        assert_eq!(v6, build_vector(-1.0, 2.0, -1.0));
+        }
     }
-}

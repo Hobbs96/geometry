@@ -57,6 +57,18 @@ impl Mul<f64> for Color {
     }
 }
 
+impl Mul for Color {
+    type Output = Self;
+
+    fn mul (self, other: Self) -> Self {
+        Self {
+            r: self.r * other.r,
+            g: self.g * other.g,
+            b: self.b * other.b,
+        }
+    }
+}
+
 impl PartialEq for Color {
     fn eq(&self, other: &Self) -> bool {
         self.r.approx_eq(other.r, (0.0, 2)) &&
@@ -129,5 +141,21 @@ mod color_tests {
         assert_eq!(c2, color::new(0.0, 0.2, 0.0));
         assert_eq!(c3, color::new(0.0, 0.0, 1.5));
         assert_eq!(c4, color::new(1.0, 1.6, 0.32));
+    }
+
+    #[test]
+    fn color_color_multiplication() {
+        let red = color::new(1.0, 0.0, 0.0);
+        let green = color::new(0.0, 1.0, 0.0);
+        let blue = color::new(0.0, 0.0, 1.0);
+        let c1 = red * green;
+        let c2 = green * blue;
+        let c3 = color::new(2.0, 1.0, 0.5) * color::new(0.72, 0.69, 0.17);
+        let c4 = color::new(0.46, 0.71, 0.84) * color::new(1.0, 1.0, 1.0);
+
+        assert_eq!(c1, color::new(0.0, 0.0, 0.0));
+        assert_eq!(c2, color::new(0.0, 0.0, 0.0));
+        assert_eq!(c3, color::new(1.44, 0.69, 0.085));
+        assert_eq!(c4, color::new(0.46, 0.71, 0.84));
     }
 }

@@ -1,5 +1,6 @@
 use core::ops::Add;
 use core::ops::Sub;
+use core::ops::Mul;
 use crate::float_cmp::ApproxEq;
 
 #[derive(Copy, Clone, Debug)]
@@ -40,6 +41,18 @@ impl Sub for Color {
             r: self.r - other.r,
             g: self.g - other.g,
             b: self.b - other.b
+        }
+    }
+}
+
+impl Mul<f64> for Color {
+    type Output = Self;
+
+    fn mul(self, scalar: f64) -> Self {
+        Self {
+            r: self.r * scalar,
+            g: self.g * scalar,
+            b: self.b * scalar
         }
     }
 }
@@ -100,5 +113,21 @@ mod color_tests {
         assert_eq!(c2, color::new(0.0, 1.0, -1.0));
         assert_eq!(c3, color::new(1.0, -1.0, 0.0));
         assert_eq!(c4, color::new(3.7, 0.19, 0.54));
+    }
+
+    #[test]
+    fn scalar_multiplication() {
+        let red = color::new(1.0, 0.0, 0.0);
+        let green = color::new(0.0, 1.0, 0.0);
+        let blue = color::new(0.0, 0.0, 1.0);
+        let c1 = red * 0.7;
+        let c2 = green * 0.2;
+        let c3 = blue * 1.5;
+        let c4 = color::new(0.5, 0.8, 0.16) * 2.0;
+
+        assert_eq!(c1, color::new(0.7, 0.0, 0.0));
+        assert_eq!(c2, color::new(0.0, 0.2, 0.0));
+        assert_eq!(c3, color::new(0.0, 0.0, 1.5));
+        assert_eq!(c4, color::new(1.0, 1.6, 0.32));
     }
 }

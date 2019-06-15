@@ -1,4 +1,5 @@
 use core::ops::Add;
+use core::ops::Sub;
 use crate::float_cmp::ApproxEq;
 
 #[derive(Copy, Clone, Debug)]
@@ -27,6 +28,18 @@ impl Add for Color {
             r: self.r + other.r,
             g: self.g + other.g,
             b: self.b + other.b
+        }
+    }
+}
+
+impl Sub for Color {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self {
+        Self {
+            r: self.r - other.r,
+            g: self.g - other.g,
+            b: self.b - other.b
         }
     }
 }
@@ -65,10 +78,27 @@ mod color_tests {
         let c1 = red + blue;
         let c2 = green + blue;
         let c3 = red + green;
+        let c4 = color::new(3.4, 7.1, 0.2) + color::new(1.2, 0.1, 0.05);
 
         assert_eq!(c1, color::new(1.0, 0.0, 1.0));
         assert_eq!(c2, color::new(0.0, 1.0, 1.0));
         assert_eq!(c3, color::new(1.0, 1.0, 0.0));
+        assert_eq!(c4, color::new(4.6, 7.2, 0.25));
+    }
 
+    #[test]
+    fn subtract_colors() {
+        let red = color::new(1.0, 0.0, 0.0);
+        let green = color::new(0.0, 1.0, 0.0);
+        let blue = color::new(0.0, 0.0, 1.0);
+        let c1 = red - blue;
+        let c2 = green - blue;
+        let c3 = red - green;
+        let c4 = color::new(4.5, 0.21, 0.71) - color::new(0.8, 0.02, 0.17);
+
+        assert_eq!(c1, color::new(1.0, 0.0, -1.0));
+        assert_eq!(c2, color::new(0.0, 1.0, -1.0));
+        assert_eq!(c3, color::new(1.0, -1.0, 0.0));
+        assert_eq!(c4, color::new(3.7, 0.19, 0.54));
     }
 }

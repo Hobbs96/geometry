@@ -1,6 +1,7 @@
 use core::ops::Add;
 use core::ops::Sub;
 use core::ops::Mul;
+use std::string::ToString;
 use crate::float_cmp::ApproxEq;
 
 #[derive(Copy, Clone, Debug)]
@@ -16,9 +17,6 @@ pub fn new(r: f64, g: f64, b: f64) -> Color{
         g,
         b
     }
-}
-
-impl Color {
 }
 
 impl Add for Color {
@@ -78,6 +76,12 @@ impl PartialEq for Color {
 }
 
 impl Eq for Color {}
+
+impl ToString for Color {
+    fn to_string(&self) -> String {
+        format!("{} {} {}", self.r, self.g, self.b)
+    }
+}
 
 #[cfg(test)]
 mod color_tests {

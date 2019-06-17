@@ -5,8 +5,8 @@ pub struct Pixel {
     pub color: color::Color
 }
 
-pub fn new(r: f64, g: f64, b: f64) -> Pixel {
+pub fn new(color: color::Color) -> Pixel {
     Pixel {
-        color: color::new(r, g, b)
+        color
     }
 }

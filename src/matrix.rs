@@ -3,6 +3,8 @@ use core::ops::IndexMut;
 
 #[derive(Clone, Debug)]
 pub struct Matrix {
+    rows: usize,
+    columns: usize,
     elements: Vec<Vec<f64>>    
 }
 
@@ -11,6 +13,8 @@ pub fn new(rows: usize, columns: usize) -> Matrix {
         panic!("Rows and columns of a matrix both must be >= 1");
     }
     Matrix {
+        rows,
+        columns,
         elements: vec![vec![0.0; columns]; rows]
     }
 }
@@ -35,9 +39,28 @@ mod matrix_tests {
 
     #[test]
     fn new_matrix() {
-        let mut matrix = matrix::new(4, 4);
-        matrix[(0, 0)] = 1.0;
+        let matrix = matrix::new(4, 4);
 
-        assert!(matrix[(0, 0)].approx_eq(1.0, (0.0, 2)));
+        for i in 0..matrix.rows {
+            for j in 0..matrix.columns {
+                assert!(matrix[(i, j)].approx_eq(0.0, (0.0, 2)));
+            }
+        }
+    }
+
+    #[test]
+    fn matrix_assignment_by_index() {
+        let mut matrix = matrix::new(4, 4);
+        for i in 0..matrix.rows {
+            for j in 0..matrix.columns {
+                matrix[(i, j)] = (i + j) as f64;
+            }
+        }
+
+        for i in 0..matrix.rows {
+            for j in 0..matrix.columns {
+                assert!(matrix[(i, j)].approx_eq((i + j) as f64, (0.0, 2)));
+            }
+        }
     }
 }

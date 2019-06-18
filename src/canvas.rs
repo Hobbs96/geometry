@@ -29,9 +29,10 @@ impl Canvas {
         // TODO: a more functional approach to clean up this looping
         let mut pixel_grid = Vec::<String>::new();
         for i in 0..self.height {
-            for j in 0..self.width {
-                pixel_grid.push(self[(i, j)].color.to_string());
-            }
+            pixel_grid.push(self.pixels[i].iter()
+            .enumerate()
+            .map(|(index, pixel)| if index < self.width - 1 {pixel.color.to_string() + " "} else {pixel.color.to_string()})
+            .collect());
         }
         result + &pixel_grid.join("\n")
     }
@@ -95,11 +96,16 @@ mod canvas_tests {
         canvas[(2, 2)] = pixel::new(c2);
 
         let ppm = canvas.to_ppm();
+        let correct_ppm = "P3\n3 3\n255\n\
+                            0 0 0 25 178 178 0 0 0\n\
+                            0 0 0 0 0 0 0 0 0\n\
+                            0 0 0 0 0 0 0 0 178".to_string();
         let mut ppm_lines = ppm.lines();
 
         assert_eq!(ppm_lines.next(), Some("P3"));
         assert_eq!(ppm_lines.next(), Some("3 3"));
         assert_eq!(ppm_lines.next(), Some("255"));
+        assert_eq!(ppm, correct_ppm);
         //TODO: write an elegant test to ensure that all of the pixels are printed correctly in the ppm string
     }
 }

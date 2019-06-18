@@ -88,17 +88,17 @@ mod canvas_tests {
 
     #[test]
     fn canvas_to_ppm() {
-        let mut canvas = canvas::new(4, 4);
+        let mut canvas = canvas::new(3, 3);
         let c1 = color::new(0.1, 0.7, 0.7);
         let c2 = color::new(0.0, 0.0, 0.7);
         canvas[(0, 1)] = pixel::new(c1);
-        canvas[(3, 3)] = pixel::new(c2);
+        canvas[(2, 2)] = pixel::new(c2);
 
         let ppm = canvas.to_ppm();
         let mut ppm_lines = ppm.lines();
 
         assert_eq!(ppm_lines.next(), Some("P3"));
-        assert_eq!(ppm_lines.next(), Some("4 4"));
+        assert_eq!(ppm_lines.next(), Some("3 3"));
         assert_eq!(ppm_lines.next(), Some("255"));
         //TODO: write an elegant test to ensure that all of the pixels are printed correctly in the ppm string
     }

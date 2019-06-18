@@ -79,7 +79,11 @@ impl Eq for Color {}
 
 impl ToString for Color {
     fn to_string(&self) -> String {
-        format!("{} {} {}", self.r, self.g, self.b)
+        let scaled_colors = [self.r, self.g, self.b].iter()
+        .map(|color| ((color * 255.0) % 255.0) as i32)
+        .map(|color| {if color < 0 {0} else if color > 255 {255} else {color}})
+        .collect::<Vec<i32>>();
+        format!("{} {} {}", scaled_colors[0], scaled_colors[1], scaled_colors[2])
     }
 }
 

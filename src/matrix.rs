@@ -63,4 +63,34 @@ mod matrix_tests {
             }
         }
     }
+
+    #[test]
+    fn matrices_of_differing_size() {
+        let mut matrix_small = matrix::new(2, 2);
+        let mut matrix_medium = matrix::new(3, 3);
+
+        matrix_small[(0, 0)] = -3.0;
+        matrix_small[(0, 1)] = 5.0;
+        matrix_small[(1, 0)] = 1.0;
+        matrix_small[(1, 1)] = -2.0;
+
+        matrix_medium[(0, 0)] = -3.0;
+        matrix_medium[(0, 1)] = 5.0;
+        matrix_medium[(0, 2)] = 0.0;
+        matrix_medium[(1, 0)] = 1.0;
+        matrix_medium[(1, 1)] = -2.0;
+        matrix_medium[(1, 2)] = -7.0;
+        matrix_medium[(2, 0)] = 0.0;
+        matrix_medium[(2, 1)] = 1.0;
+        matrix_medium[(2, 2)] = 1.0;
+        
+        assert!(matrix_small[(0, 0)].approx_eq(-3.0, (0.0, 2)));
+        assert!(matrix_small[(0, 1)].approx_eq(5.0, (0.0, 2)));
+        assert!(matrix_small[(1, 0)].approx_eq(1.0, (0.0, 2)));
+        assert!(matrix_small[(1, 1)].approx_eq(-2.0, (0.0, 2)));
+
+        assert!(matrix_medium[(0, 0)].approx_eq(-3.0, (0.0, 2)));
+        assert!(matrix_medium[(1, 1)].approx_eq(-2.0, (0.0, 2)));
+        assert!(matrix_medium[(2, 2)].approx_eq(1.0, (0.0, 2)));
+    }
 }

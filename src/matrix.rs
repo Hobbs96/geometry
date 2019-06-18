@@ -19,6 +19,7 @@ pub fn new(rows: usize, columns: usize) -> Matrix {
     }
 }
 
+//change the implementation so that by indexing you get a vector, enabling [][] syntax
 impl Index<(usize, usize)> for Matrix {
     type Output = f64;
 

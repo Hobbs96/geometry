@@ -21,10 +21,11 @@ pub fn new(height: usize, width: usize) -> Canvas {
 
 impl Canvas {
     pub fn to_ppm(self) -> String {
-        let mut result = String::new();
-        result.push_str("P3\n");
-        result = result + &format!("{} {}\n",self.width.to_string(), self.height.to_string());
-        result = result + "255\n";
+        //TODO: some ppm programs don't allow lines over 70 chars
+        let mut ppm = String::new();
+        ppm.push_str("P3\n");
+        ppm = ppm + &format!("{} {}\n",self.width.to_string(), self.height.to_string());
+        ppm = ppm + "255\n";
 
         let mut pixel_grid = Vec::<String>::new();
         for i in 0..self.height {
@@ -33,7 +34,7 @@ impl Canvas {
             .map(|(index, pixel)| if index < self.width - 1 {pixel.color.to_string() + " "} else {pixel.color.to_string()})
             .collect());
         }
-        result + &pixel_grid.join("\n")
+        ppm + &pixel_grid.join("\n") + "\n" //some ppm programs are picky about a trailing newline
     }
 }
 
@@ -100,7 +101,7 @@ mod canvas_tests {
         let correct_ppm = "P3\n3 3\n255\n\
                             0 0 0 25 178 178 0 0 0\n\
                             0 0 0 0 127 255 0 0 0\n\
-                            0 0 0 0 0 0 0 0 178".to_string();
+                            0 0 0 0 0 0 0 0 178\n".to_string();
         let mut ppm_lines = ppm.lines();
 
         assert_eq!(ppm_lines.next(), Some("P3"));

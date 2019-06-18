@@ -23,7 +23,7 @@ impl Canvas {
     pub fn to_ppm(self) -> String {
         //TODO: some ppm programs don't allow lines over 70 chars
         let mut ppm = String::new();
-        ppm.push_str("P3\n");
+        ppm.push_str("P6\n");
         ppm = ppm + &format!("{} {}\n",self.width.to_string(), self.height.to_string());
         ppm = ppm + "255\n";
 
@@ -98,13 +98,13 @@ mod canvas_tests {
         canvas[(2, 2)] = pixel::new(c3);
 
         let ppm = canvas.to_ppm();
-        let correct_ppm = "P3\n3 3\n255\n\
+        let correct_ppm = "P6\n3 3\n255\n\
                             0 0 0 25 178 178 0 0 0\n\
                             0 0 0 0 127 255 0 0 0\n\
                             0 0 0 0 0 0 0 0 178\n".to_string();
         let mut ppm_lines = ppm.lines();
 
-        assert_eq!(ppm_lines.next(), Some("P3"));
+        assert_eq!(ppm_lines.next(), Some("P6"));
         assert_eq!(ppm_lines.next(), Some("3 3"));
         assert_eq!(ppm_lines.next(), Some("255"));
         assert_eq!(ppm, correct_ppm);

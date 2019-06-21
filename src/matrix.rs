@@ -20,19 +20,20 @@ pub fn new(rows: usize, columns: usize) -> Matrix {
 }
 
 //change the implementation so that by indexing you get a vector, enabling [][] syntax
-impl Index<(usize, usize)> for Matrix {
-    type Output = f64;
+impl Index<(usize)> for Matrix {
+    type Output = Vec<f64>;
 
-    fn index(&self, index: (usize, usize)) -> &Self::Output {
-        &self.elements[index.0][index.1]
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.elements[index]
     }
 }
 
-impl IndexMut<(usize, usize)> for Matrix {
-    fn index_mut(&mut self, index: (usize, usize)) -> &mut f64{
-        &mut self.elements[index.0][index.1]
+impl IndexMut<usize> for Matrix {
+    fn index_mut(&mut self, index: usize) -> &mut Vec<f64> {
+        &mut self.elements[index]
     }
 }
+
 #[cfg(test)]
 mod matrix_tests {
     use crate::matrix;
@@ -44,7 +45,7 @@ mod matrix_tests {
 
         for i in 0..matrix.rows {
             for j in 0..matrix.columns {
-                assert!(matrix[(i, j)].approx_eq(0.0, (0.0, 2)));
+                assert!(matrix[i][j].approx_eq(0.0, (0.0, 2)));
             }
         }
     }
@@ -54,13 +55,13 @@ mod matrix_tests {
         let mut matrix = matrix::new(4, 4);
         for i in 0..matrix.rows {
             for j in 0..matrix.columns {
-                matrix[(i, j)] = (i + j) as f64;
+                matrix[i][j] = (i + j) as f64;
             }
         }
 
         for i in 0..matrix.rows {
             for j in 0..matrix.columns {
-                assert!(matrix[(i, j)].approx_eq((i + j) as f64, (0.0, 2)));
+                assert!(matrix[i][j].approx_eq((i + j) as f64, (0.0, 2)));
             }
         }
     }
@@ -70,28 +71,28 @@ mod matrix_tests {
         let mut matrix_small = matrix::new(2, 2);
         let mut matrix_medium = matrix::new(3, 3);
 
-        matrix_small[(0, 0)] = -3.0;
-        matrix_small[(0, 1)] = 5.0;
-        matrix_small[(1, 0)] = 1.0;
-        matrix_small[(1, 1)] = -2.0;
+        matrix_small[0][0] = -3.0;
+        matrix_small[0][1] = 5.0;
+        matrix_small[1][0] =  1.0;
+        matrix_small[1][1] = -2.0;
 
-        matrix_medium[(0, 0)] = -3.0;
-        matrix_medium[(0, 1)] = 5.0;
-        matrix_medium[(0, 2)] = 0.0;
-        matrix_medium[(1, 0)] = 1.0;
-        matrix_medium[(1, 1)] = -2.0;
-        matrix_medium[(1, 2)] = -7.0;
-        matrix_medium[(2, 0)] = 0.0;
-        matrix_medium[(2, 1)] = 1.0;
-        matrix_medium[(2, 2)] = 1.0;
+        matrix_medium[0][0] = -3.0;
+        matrix_medium[0][1] = 5.0;
+        matrix_medium[0][2] = 0.0;
+        matrix_medium[1][0] = 1.0;
+        matrix_medium[1][1] = -2.0;
+        matrix_medium[1][2] = -7.0;
+        matrix_medium[2][0] = 0.0;
+        matrix_medium[2][1] = 1.0;
+        matrix_medium[2][2] = 1.0;
         
-        assert!(matrix_small[(0, 0)].approx_eq(-3.0, (0.0, 2)));
-        assert!(matrix_small[(0, 1)].approx_eq(5.0, (0.0, 2)));
-        assert!(matrix_small[(1, 0)].approx_eq(1.0, (0.0, 2)));
-        assert!(matrix_small[(1, 1)].approx_eq(-2.0, (0.0, 2)));
+        assert!(matrix_small[0][0].approx_eq(-3.0, (0.0, 2)));
+        assert!(matrix_small[0][1].approx_eq(5.0, (0.0, 2)));
+        assert!(matrix_small[1][0].approx_eq(1.0, (0.0, 2)));
+        assert!(matrix_small[1][1].approx_eq(-2.0, (0.0, 2)));
 
-        assert!(matrix_medium[(0, 0)].approx_eq(-3.0, (0.0, 2)));
-        assert!(matrix_medium[(1, 1)].approx_eq(-2.0, (0.0, 2)));
-        assert!(matrix_medium[(2, 2)].approx_eq(1.0, (0.0, 2)));
+        assert!(matrix_medium[0][0].approx_eq(-3.0, (0.0, 2)));
+        assert!(matrix_medium[1][1].approx_eq(-2.0, (0.0, 2)));
+        assert!(matrix_medium[2][2].approx_eq(1.0, (0.0, 2)));
     }
 }

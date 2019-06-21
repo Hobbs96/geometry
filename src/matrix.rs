@@ -34,6 +34,26 @@ impl IndexMut<usize> for Matrix {
     }
 }
 
+impl PartialEq for Matrix {
+    fn eq(&self, other: &Self) -> bool {
+        if self.rows != other.rows || self.columns != other.columns {
+            false
+        }
+        else {
+            for i in 0..self.rows {
+                for j in 0..self.columns {
+                    if self[i][j] != other[i][j] {
+                        return false
+                    }
+                }
+            }
+            true
+        }
+    }
+}
+
+impl Eq for Matrix {}
+
 #[cfg(test)]
 mod matrix_tests {
     use crate::matrix;
@@ -94,5 +114,24 @@ mod matrix_tests {
         assert!(matrix_medium[0][0].approx_eq(-3.0, (0.0, 2)));
         assert!(matrix_medium[1][1].approx_eq(-2.0, (0.0, 2)));
         assert!(matrix_medium[2][2].approx_eq(1.0, (0.0, 2)));
+    }
+
+    #[test]
+    fn matrix_equality() {
+        let mut matrix1 = matrix::new(2, 2);
+        let mut matrix2 = matrix::new(2, 2);
+        let matrix3 = matrix::new(3, 3);
+
+        matrix1[0][0] = 1.7;
+        matrix1[1][1] = -3.1;
+        matrix2[0][0] = 1.7;
+        matrix2[1][1] = -3.1;
+        
+        assert_eq!(matrix1, matrix2);
+
+        matrix1[0][1] = 2.0;
+
+        assert_ne!(matrix1, matrix2);
+        assert_ne!(matrix1, matrix3);
     }
 }

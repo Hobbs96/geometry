@@ -1,5 +1,6 @@
 use core::ops::Index;
 use core::ops::IndexMut;
+use core::ops::Mul;
 
 #[derive(Clone, Debug)]
 pub struct Matrix {
@@ -31,6 +32,23 @@ impl Index<(usize)> for Matrix {
 impl IndexMut<usize> for Matrix {
     fn index_mut(&mut self, index: usize) -> &mut Vec<f64> {
         &mut self.elements[index]
+    }
+}
+
+impl Mul<Matrix> for Matrix {
+    type Output = Matrix;
+
+    fn mul(self, other: Self) -> Matrix {
+        let mut product = new(self.rows, self.columns);
+        for row in 0..self.rows {
+            for column in 0..self.columns {
+               product[row][column] = self[row][0] * other[0][column]  +
+                                        self[row][1] * other[1][column]  +
+                                        self[row][2] * other[2][column]  +
+                                        self[row][3] * other[3][column];
+            }
+        }
+        product
     }
 }
 
@@ -133,5 +151,28 @@ mod matrix_tests {
 
         assert_ne!(matrix1, matrix2);
         assert_ne!(matrix1, matrix3);
+    }
+
+    #[test]
+    fn matrix_multiplication() {
+        let mut matrix1 = matrix::new(4, 4);
+        let mut matrix2 = matrix::new(4, 4);
+
+        matrix1[0] = vec![1.0, 2.0, 3.0, 4.0];
+        matrix1[1] = vec![5.0, 6.0, 7.0, 8.0];
+        matrix1[2] = vec![9.0, 8.0, 7.0, 6.0];
+        matrix1[3] = vec![5.0, 4.0, 3.0, 2.0];
+
+        matrix2[0] = vec![-2.0, 1.0, 2.0, 3.0];
+        matrix2[1] = vec![3.0, 2.0, 1.0, -1.0];
+        matrix2[2] = vec![4.0, 3.0, 6.0, 5.0];
+        matrix2[3] = vec![1.0, 2.0, 7.0, 8.0];
+
+        let matrix3 = matrix1 * matrix2;
+
+        assert_eq!(matrix3[0], vec![20.0, 22.0, 50.0, 48.0]);
+        assert_eq!(matrix3[1], vec![44.0, 54.0, 114.0, 108.0]);
+        assert_eq!(matrix3[2], vec![40.0, 58.0, 110.0, 102.0]);
+        assert_eq!(matrix3[3], vec![16.0, 26.0, 46.0, 42.0]);
     }
 }

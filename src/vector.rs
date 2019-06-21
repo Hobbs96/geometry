@@ -7,7 +7,7 @@ use crate::float_cmp::ApproxEq;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Vector {
-    w: f64,
+    pub w: f64,
     pub x: f64,
     pub y: f64,
     pub z: f64

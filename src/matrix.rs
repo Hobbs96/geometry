@@ -1,6 +1,9 @@
+use crate::vector;
+use crate::float_cmp::ApproxEq;
 use core::ops::Index;
 use core::ops::IndexMut;
 use core::ops::Mul;
+
 
 #[derive(Clone, Debug)]
 pub struct Matrix {
@@ -38,9 +41,14 @@ impl Mul<Matrix> for Matrix {
     type Output = Matrix;
 
     fn mul(self, other: Self) -> Matrix {
+        if self.columns != other.rows {
+            panic!("Matrix multiplication requires that the number of rows
+             in the first Matrix is equal to the number of columns in the second");
+        }
+
         let mut product = new(self.rows, self.columns);
         for row in 0..self.rows {
-            for column in 0..self.columns {
+            for column in 0..other.columns {
                product[row][column] = self[row][0] * other[0][column]  +
                                         self[row][1] * other[1][column]  +
                                         self[row][2] * other[2][column]  +
@@ -48,6 +56,26 @@ impl Mul<Matrix> for Matrix {
             }
         }
         product
+    }
+}
+
+impl Mul<vector::Vector> for Matrix {
+    type Output = vector::Vector;
+
+    fn mul(self, vec: vector::Vector) -> vector::Vector {
+        let mut vector_as_matrix = new(4, 1);
+        vector_as_matrix[0] = vec![vec.x];
+        vector_as_matrix[1] = vec![vec.y];
+        vector_as_matrix[2] = vec![vec.z];
+        vector_as_matrix[3] = vec![vec.w];
+
+        let product = self * vector_as_matrix;
+        if product[3][0].approx_eq(1.0, (0.0, 2)) {
+            vector::build_point(product[0][0], product[1][0],product[2][0])
+        }
+        else {
+            vector::build_vector(product[0][0], product[1][0],product[2][0])
+        }
     }
 }
 
@@ -74,6 +102,7 @@ impl Eq for Matrix {}
 #[cfg(test)]
 mod matrix_tests {
     use crate::matrix;
+    use crate::vector;
     use crate::float_cmp::ApproxEq;
 
     #[test]
@@ -108,20 +137,12 @@ mod matrix_tests {
         let mut matrix_small = matrix::new(2, 2);
         let mut matrix_medium = matrix::new(3, 3);
 
-        matrix_small[0][0] = -3.0;
-        matrix_small[0][1] = 5.0;
-        matrix_small[1][0] =  1.0;
-        matrix_small[1][1] = -2.0;
+        matrix_small[0] = vec![-3.0, 5.0];
+        matrix_small[1] = vec![1.0, -2.0];
 
-        matrix_medium[0][0] = -3.0;
-        matrix_medium[0][1] = 5.0;
-        matrix_medium[0][2] = 0.0;
-        matrix_medium[1][0] = 1.0;
-        matrix_medium[1][1] = -2.0;
-        matrix_medium[1][2] = -7.0;
-        matrix_medium[2][0] = 0.0;
-        matrix_medium[2][1] = 1.0;
-        matrix_medium[2][2] = 1.0;
+        matrix_medium[0] = vec![-3.0, 5.0, 0.0];
+        matrix_medium[1] = vec![1.0, -2.0, -7.0];
+        matrix_medium[2] = vec![0.0, 1.0, 1.0];
         
         assert!(matrix_small[0][0].approx_eq(-3.0, (0.0, 2)));
         assert!(matrix_small[0][1].approx_eq(5.0, (0.0, 2)));
@@ -174,4 +195,20 @@ mod matrix_tests {
         assert_eq!(matrix3[2], vec![40.0, 58.0, 110.0, 102.0]);
         assert_eq!(matrix3[3], vec![16.0, 26.0, 46.0, 42.0]);
     }
+
+    #[test]
+    fn matrix_vector_multiplication() {
+        let mut matrix1 = matrix::new(4, 4);
+        let p1 = vector::build_point(1.0, 2.0, 3.0);
+
+        matrix1[0] = vec![1.0, 2.0, 3.0, 4.0];
+        matrix1[1] = vec![2.0, 4.0, 4.0, 2.0];
+        matrix1[2] = vec![8.0, 6.0, 4.0, 1.0];
+        matrix1[3] = vec![0.0, 0.0, 0.0, 1.0];
+        
+
+        let p2 = matrix1 * p1;
+
+        assert_eq!(p2, vector::build_point(18.0, 24.0, 33.0));
+    } 
 }

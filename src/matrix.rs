@@ -22,6 +22,26 @@ pub fn new(rows: usize, columns: usize) -> Matrix {
     }
 }
 
+pub fn from_vectors(rows: Vec<Vec<f64>>) -> Matrix {
+    let n = rows.len();
+   if n == 0 {
+       panic!("Cannot create an empty matrix. Please supply at least a 1x1 square matrix.");
+   } 
+   for i in 0..n {
+       if rows[i].len() != n {
+           panic!("You must provide a square (n x n) matrix as an argument.");
+       }
+   }
+   let mut matrix = new(n, n);
+   for i in 0..n {
+       for j in 0..n {
+           matrix[i][j] = rows[i][j];
+       }
+   }
+   let matrix = matrix;
+   matrix
+}
+
 impl Index<(usize)> for Matrix {
     type Output = Vec<f64>;
 
@@ -111,6 +131,27 @@ mod matrix_tests {
                 assert!(matrix[i][j].approx_eq(0.0, (0.0, 2)));
             }
         }
+    }
+
+    #[test]
+    fn new_matrix_from_vectors() {
+        let matrix = matrix::from_vectors(vec![vec![1.0, 2.0, 3.0, 4.0],
+                                            vec![5.0, 6.0, 7.0, 8.0],
+                                            vec![9.0, 8.0, 7.0, 6.0],
+                                            vec![5.0, 4.0, 3.0, 2.0]]);
+
+        assert!(matrix[2][2].approx_eq(7.0, (0.0, 2)));
+        assert!(matrix[3][1].approx_eq(4.0, (0.0, 2)));
+        assert!(matrix[3][3].approx_eq(2.0, (0.0, 2)));
+    }
+
+    #[test]
+    #[should_panic]
+    fn new_matrix_from_non_square_vectors() {
+        let matrix = matrix::from_vectors(vec![vec![1.0, 2.0, 3.0],
+                                            vec![4.0, 5.0, 6.0],
+                                            vec![7.0, 8.0, 9.0, 10.0]]);
+        assert!(matrix.rows == matrix.columns);
     }
 
     #[test]

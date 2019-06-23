@@ -1,13 +1,13 @@
-use crate::pixel;
 use crate::color;
-use std::ops::IndexMut;
+use crate::pixel;
 use std::ops::Index;
+use std::ops::IndexMut;
 
 #[derive(Clone)]
 pub struct Canvas {
     width: usize,
     height: usize,
-    pixels: Vec<Vec<pixel::Pixel>>
+    pixels: Vec<Vec<pixel::Pixel>>,
 }
 
 pub fn new(height: usize, width: usize) -> Canvas {
@@ -15,7 +15,7 @@ pub fn new(height: usize, width: usize) -> Canvas {
     Canvas {
         width,
         height,
-        pixels
+        pixels,
     }
 }
 
@@ -24,15 +24,24 @@ impl Canvas {
         //TODO: some ppm programs don't allow lines over 70 chars
         let mut ppm = String::new();
         ppm.push_str("P6\n");
-        ppm = ppm + &format!("{} {}\n",self.width.to_string(), self.height.to_string());
+        ppm = ppm + &format!("{} {}\n", self.width.to_string(), self.height.to_string());
         ppm = ppm + "255\n";
 
         let mut pixel_grid = Vec::<String>::new();
         for i in 0..self.height {
-            pixel_grid.push(self.pixels[i].iter()
-            .enumerate()
-            .map(|(index, pixel)| if index < self.width - 1 {pixel.color.to_string() + " "} else {pixel.color.to_string()})
-            .collect());
+            pixel_grid.push(
+                self.pixels[i]
+                    .iter()
+                    .enumerate()
+                    .map(|(index, pixel)| {
+                        if index < self.width - 1 {
+                            pixel.color.to_string() + " "
+                        } else {
+                            pixel.color.to_string()
+                        }
+                    })
+                    .collect(),
+            );
         }
         ppm + &pixel_grid.join("\n") + "\n" //some ppm programs are picky about a trailing newline
     }
@@ -42,12 +51,12 @@ impl Index<(usize, usize)> for Canvas {
     type Output = pixel::Pixel;
 
     fn index(&self, index: (usize, usize)) -> &Self::Output {
-       &self.pixels[index.0][index.1]
+        &self.pixels[index.0][index.1]
     }
 }
 
 impl IndexMut<(usize, usize)> for Canvas {
-    fn index_mut(&mut self, index: (usize, usize)) -> &mut pixel::Pixel{
+    fn index_mut(&mut self, index: (usize, usize)) -> &mut pixel::Pixel {
         &mut self.pixels[index.0][index.1]
     }
 }
@@ -78,7 +87,7 @@ mod canvas_tests {
         let c1 = color::new(0.25, 0.5, 0.75);
         canvas[(0, 5)] = pixel::new(red);
         canvas[(0, 0)] = pixel::new(red);
-        canvas[(3 ,4)] = pixel::new(c1);
+        canvas[(3, 4)] = pixel::new(c1);
         canvas[(9, 9)] = pixel::new(c1);
 
         assert_eq!(canvas[(0, 5)].color, red);
@@ -99,9 +108,10 @@ mod canvas_tests {
 
         let ppm = canvas.to_ppm();
         let correct_ppm = "P6\n3 3\n255\n\
-                            0 0 0 25 178 178 0 0 0\n\
-                            0 0 0 0 127 255 0 0 0\n\
-                            0 0 0 0 0 0 0 0 178\n".to_string();
+                           0 0 0 25 178 178 0 0 0\n\
+                           0 0 0 0 127 255 0 0 0\n\
+                           0 0 0 0 0 0 0 0 178\n"
+            .to_string();
         let mut ppm_lines = ppm.lines();
 
         assert_eq!(ppm_lines.next(), Some("P6"));

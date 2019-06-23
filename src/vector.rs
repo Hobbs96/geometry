@@ -1,50 +1,37 @@
-use core::ops::Add;
-use core::ops::Sub;
-use core::ops::Neg;
-use core::ops::Mul;
-use core::ops::Div;
 use crate::float_cmp::ApproxEq;
+use core::ops::Add;
+use core::ops::Div;
+use core::ops::Mul;
+use core::ops::Neg;
+use core::ops::Sub;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Vector {
     pub w: f64,
     pub x: f64,
     pub y: f64,
-    pub z: f64
+    pub z: f64,
 }
 
 pub fn build_vector(x: f64, y: f64, z: f64) -> Vector {
-    Vector {
-        w: 0.0,
-        x,
-        y,
-        z
-    }
+    Vector { w: 0.0, x, y, z }
 }
 
 pub fn build_point(x: f64, y: f64, z: f64) -> Vector {
-    Vector {
-        w: 1.0,
-        x,
-        y,
-        z
-    }
+    Vector { w: 1.0, x, y, z }
 }
 
 impl Vector {
     pub fn is_point(&self) -> bool {
         if self.w.approx_eq(1.0, (0.0, 2)) {
             true
-        }
-        else {
+        } else {
             false
         }
     }
 
     pub fn magnitude(&self) -> f64 {
-        (self.x.powi(2) +
-        self.y.powi(2) +
-        self.z.powi(2)).sqrt()
+        (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
 
     pub fn normalized(&self) -> Self {
@@ -53,7 +40,7 @@ impl Vector {
             w: self.w / magnitude,
             x: self.x / magnitude,
             y: self.y / magnitude,
-            z: self.z / magnitude
+            z: self.z / magnitude,
         }
     }
 
@@ -61,10 +48,7 @@ impl Vector {
         if self.is_point() {
             panic!("dot, the dot-product method, should not be called on a point");
         }
-        self.w * other.w +
-        self.x * other.x +
-        self.y * other.y +
-        self.z * other.z
+        self.w * other.w + self.x * other.x + self.y * other.y + self.z * other.z
     }
 
     pub fn cross(&self, other: Self) -> Self {
@@ -75,17 +59,17 @@ impl Vector {
             w: self.w,
             x: self.y * other.z - self.z * other.y,
             y: self.z * other.x - self.x * other.z,
-            z: self.x * other.y - self.y * other.x
+            z: self.x * other.y - self.y * other.x,
         }
     }
 }
 
 impl PartialEq for Vector {
     fn eq(&self, other: &Self) -> bool {
-        self.w.approx_eq(other.w, (0.0, 2)) &&
-        self.x.approx_eq(other.x, (0.0, 2)) &&
-        self.y.approx_eq(other.y, (0.0, 2)) &&
-        self.z.approx_eq(other.z, (0.0, 2))
+        self.w.approx_eq(other.w, (0.0, 2))
+            && self.x.approx_eq(other.x, (0.0, 2))
+            && self.y.approx_eq(other.y, (0.0, 2))
+            && self.z.approx_eq(other.z, (0.0, 2))
     }
 }
 
@@ -112,7 +96,7 @@ impl Add for Vector {
             w: self.w + other.w,
             x: self.x + other.x,
             y: self.y + other.y,
-            z: self.z + other.z
+            z: self.z + other.z,
         }
     }
 }
@@ -125,7 +109,7 @@ impl Neg for Vector {
             w: -self.w,
             x: -self.x,
             y: -self.y,
-            z: -self.z
+            z: -self.z,
         }
     }
 }
@@ -138,7 +122,7 @@ impl Mul<f64> for Vector {
             w: self.w * scalar,
             x: self.x * scalar,
             y: self.y * scalar,
-            z: self.z * scalar
+            z: self.z * scalar,
         }
     }
 }
@@ -151,16 +135,16 @@ impl Div<f64> for Vector {
             w: self.w / scalar,
             x: self.x / scalar,
             y: self.y / scalar,
-            z: self.z / scalar
+            z: self.z / scalar,
         }
     }
 }
 
 #[cfg(test)]
 mod vector_tests {
+    use crate::float_cmp::ApproxEq;
     use crate::vector::build_point;
     use crate::vector::build_vector;
-    use crate::float_cmp::ApproxEq;
 
     #[test]
     fn point_w_is_one() {
@@ -221,19 +205,19 @@ mod vector_tests {
 
     #[test]
     fn subtract_from_zero_vector() {
-       let v1 = build_vector(3.0, 4.0, 5.0);
-       let origin = build_vector(0.0, 0.0, 0.0);
-       let v2 = origin - v1;
+        let v1 = build_vector(3.0, 4.0, 5.0);
+        let origin = build_vector(0.0, 0.0, 0.0);
+        let v2 = origin - v1;
 
-       assert_eq!(v2, build_vector(-3.0, -4.0, -5.0));
-       assert!(!v2.is_point());
+        assert_eq!(v2, build_vector(-3.0, -4.0, -5.0));
+        assert!(!v2.is_point());
     }
 
     #[test]
     fn negate_vector() {
         let v1 = build_vector(1.0, 2.0, 3.0);
         let v2 = -v1;
-        
+
         assert_eq!(v2, build_vector(-1.0, -2.0, -3.0));
         assert!(!v2.is_point());
     }
@@ -291,10 +275,10 @@ mod vector_tests {
 
     #[test]
     fn vector_normalization() {
-       let v1 = build_vector(4.0, 0.0, 0.0);
-       let v2 = v1.normalized();
-       let v3 = build_vector(1.0, 2.0, 3.0);
-       let v4 = v3.normalized();
+        let v1 = build_vector(4.0, 0.0, 0.0);
+        let v2 = v1.normalized();
+        let v3 = build_vector(1.0, 2.0, 3.0);
+        let v4 = v3.normalized();
 
         assert_eq!(v2, build_vector(1.0, 0.0, 0.0));
         assert!(v2.magnitude().approx_eq(1.0, (0.0, 2)));
@@ -334,5 +318,5 @@ mod vector_tests {
         assert_eq!(v4, build_vector(1.0, -2.0, 1.0));
         assert_eq!(v5, build_vector(1.0, -2.0, 1.0));
         assert_eq!(v6, build_vector(-1.0, 2.0, -1.0));
-        }
     }
+}

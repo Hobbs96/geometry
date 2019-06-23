@@ -1,6 +1,6 @@
 extern crate float_cmp;
-pub mod vector;
-pub mod color;
-pub mod pixel;
 pub mod canvas;
+pub mod color;
 pub mod matrix;
+pub mod pixel;
+pub mod vector;

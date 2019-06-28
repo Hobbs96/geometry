@@ -280,11 +280,19 @@ mod matrix_tests {
 
     #[test]
     fn identity_matrix_multiplication() {
-        let matrix = matrix::from_vectors(vec![vec![0.0, 1.0, 2.0, 4.0],
+        let m1 = matrix::from_vectors(vec![vec![0.0, 1.0, 2.0, 4.0],
                                                 vec![1.0, 2.0, 4.0, 8.0],
                                                 vec![2.0, 4.0, 8.0, 16.0],
                                                 vec![4.0, 8.0, 16.0, 32.0]]);
-        let matrix2 = matrix.clone() * matrix::IDENTITY.clone();        
-        assert_eq!(matrix2, matrix);
+        let m2 = matrix::from_vectors(vec![vec![0.0, 1.0, 2.0, 4.0],
+                                                vec![1.3, 2.1, 4.4, 8.7],
+                                                vec![2.0, 7.1, 8.0, 16.0],
+                                                vec![4.0, 8.0, 16.0, 32.0]]);
+
+        let m3 = m1.clone() * matrix::IDENTITY.clone();        
+        let m4 = m2.clone() * matrix::IDENTITY.clone();        
+
+        assert_eq!(m1, m3);
+        assert_eq!(m2, m4);
     }
 }

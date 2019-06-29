@@ -20,7 +20,7 @@ lazy_static::lazy_static! {
 pub struct Matrix {
     rows: usize,
     columns: usize,
-    elements: Vec<Vec<f64>>,
+    elements: [[f64; 4]; 4]
 }
 
 pub fn new(rows: usize, columns: usize) -> Matrix {
@@ -30,7 +30,7 @@ pub fn new(rows: usize, columns: usize) -> Matrix {
     Matrix {
         rows,
         columns,
-        elements: vec![vec![0.0; columns]; rows],
+        elements: [[0.0; 4]; 4]
     }
 }
 
@@ -38,14 +38,12 @@ pub fn from_vectors(rows: Vec<Vec<f64>>) -> Matrix {
     let n = rows.len();
    if n == 0 {
        panic!("Cannot create an empty matrix. Please supply at least a 1x1 square matrix.");
-   } 
+   }
+    let mut matrix = new(n, n);
    for i in 0..n {
        if rows[i].len() != n {
-           panic!("You must provide a square (n x n) matrix as an argument.");
+           panic!("You must provide a square (n x n) matrix as an argument")
        }
-   }
-   let mut matrix = new(n, n);
-   for i in 0..n {
        for j in 0..n {
            matrix[i][j] = rows[i][j];
        }
@@ -55,7 +53,7 @@ pub fn from_vectors(rows: Vec<Vec<f64>>) -> Matrix {
 }
 
 impl Index<(usize)> for Matrix {
-    type Output = Vec<f64>;
+    type Output = [f64; 4];
 
     fn index(&self, index: usize) -> &Self::Output {
         &self.elements[index]
@@ -63,7 +61,7 @@ impl Index<(usize)> for Matrix {
 }
 
 impl IndexMut<usize> for Matrix {
-    fn index_mut(&mut self, index: usize) -> &mut Vec<f64> {
+    fn index_mut(&mut self, index: usize) -> &mut [f64; 4] {
         &mut self.elements[index]
     }
 }
@@ -97,10 +95,10 @@ impl Mul<vector::Vector> for Matrix {
 
     fn mul(self, vec: vector::Vector) -> vector::Vector {
         let mut vector_as_matrix = new(4, 1);
-        vector_as_matrix[0] = vec![vec.x];
-        vector_as_matrix[1] = vec![vec.y];
-        vector_as_matrix[2] = vec![vec.z];
-        vector_as_matrix[3] = vec![vec.w];
+        vector_as_matrix[0] = [vec.x, 0.0, 0.0, 0.0];
+        vector_as_matrix[1] = [vec.y, 0.0, 0.0, 0.0];
+        vector_as_matrix[2] = [vec.z, 0.0, 0.0, 0.0];
+        vector_as_matrix[3] = [vec.w, 0.0, 0.0, 0.0];
 
         let product = self * vector_as_matrix;
         if product[3][0].approx_eq(1.0, (0.0, 2)) {
@@ -201,15 +199,12 @@ mod matrix_tests {
 
     #[test]
     fn matrices_of_differing_size() {
-        let mut matrix_small = matrix::new(2, 2);
-        let mut matrix_medium = matrix::new(3, 3);
+        let matrix_small = matrix::from_vectors(vec![vec![-3.0, 5.0], vec![1.0, -2.0]]);
+        let matrix_medium = matrix::from_vectors(vec![
+                                                vec![-3.0, 5.0, 0.0],
+                                                vec![1.0, -2.0, -7.0],
+                                                vec![0.0, 1.0, 1.0]]);
 
-        matrix_small[0] = vec![-3.0, 5.0];
-        matrix_small[1] = vec![1.0, -2.0];
-
-        matrix_medium[0] = vec![-3.0, 5.0, 0.0];
-        matrix_medium[1] = vec![1.0, -2.0, -7.0];
-        matrix_medium[2] = vec![0.0, 1.0, 1.0];
 
         assert!(matrix_small[0][0].approx_eq(-3.0, (0.0, 2)));
         assert!(matrix_small[0][1].approx_eq(5.0, (0.0, 2)));
@@ -242,36 +237,36 @@ mod matrix_tests {
 
     #[test]
     fn matrix_multiplication() {
-        let mut matrix1 = matrix::new(4, 4);
-        let mut matrix2 = matrix::new(4, 4);
+        let matrix1 = matrix::from_vectors(vec![
+                                        vec![1.0, 2.0, 3.0, 4.0],
+                                        vec![5.0, 6.0, 7.0, 8.0],
+                                        vec![9.0, 8.0, 7.0, 6.0],
+                                        vec![5.0, 4.0, 3.0, 2.0]]);
+        let matrix2 = matrix::from_vectors(vec![
+                                        vec![-2.0, 1.0, 2.0, 3.0],
+                                        vec![3.0, 2.0, 1.0, -1.0],
+                                        vec![4.0, 3.0, 6.0, 5.0],
+                                        vec![1.0, 2.0, 7.0, 8.0]]);
 
-        matrix1[0] = vec![1.0, 2.0, 3.0, 4.0];
-        matrix1[1] = vec![5.0, 6.0, 7.0, 8.0];
-        matrix1[2] = vec![9.0, 8.0, 7.0, 6.0];
-        matrix1[3] = vec![5.0, 4.0, 3.0, 2.0];
 
-        matrix2[0] = vec![-2.0, 1.0, 2.0, 3.0];
-        matrix2[1] = vec![3.0, 2.0, 1.0, -1.0];
-        matrix2[2] = vec![4.0, 3.0, 6.0, 5.0];
-        matrix2[3] = vec![1.0, 2.0, 7.0, 8.0];
 
         let matrix3 = matrix1 * matrix2;
 
-        assert_eq!(matrix3[0], vec![20.0, 22.0, 50.0, 48.0]);
-        assert_eq!(matrix3[1], vec![44.0, 54.0, 114.0, 108.0]);
-        assert_eq!(matrix3[2], vec![40.0, 58.0, 110.0, 102.0]);
-        assert_eq!(matrix3[3], vec![16.0, 26.0, 46.0, 42.0]);
+        assert_eq!(matrix3[0], [20.0, 22.0, 50.0, 48.0]);
+        assert_eq!(matrix3[1], [44.0, 54.0, 114.0, 108.0]);
+        assert_eq!(matrix3[2], [40.0, 58.0, 110.0, 102.0]);
+        assert_eq!(matrix3[3], [16.0, 26.0, 46.0, 42.0]);
     }
 
     #[test]
     fn matrix_vector_multiplication() {
-        let mut matrix1 = matrix::new(4, 4);
+        let matrix1 = matrix::from_vectors(vec![
+                                        vec![1.0, 2.0, 3.0, 4.0],
+                                        vec![2.0, 4.0, 4.0, 2.0],
+                                        vec![8.0, 6.0, 4.0, 1.0],
+                                        vec![0.0, 0.0, 0.0, 1.0]]);
         let p1 = vector::build_point(1.0, 2.0, 3.0);
 
-        matrix1[0] = vec![1.0, 2.0, 3.0, 4.0];
-        matrix1[1] = vec![2.0, 4.0, 4.0, 2.0];
-        matrix1[2] = vec![8.0, 6.0, 4.0, 1.0];
-        matrix1[3] = vec![0.0, 0.0, 0.0, 1.0];
 
         let p2 = matrix1 * p1;
 

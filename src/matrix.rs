@@ -1,26 +1,14 @@
 use crate::float_cmp::ApproxEq;
-use crate::lazy_static;
 use crate::vector;
 use core::ops::Index;
 use core::ops::IndexMut;
 use core::ops::Mul;
 
-lazy_static::lazy_static! {
-    static ref IDENTITY: Matrix = {
-        let identity = from_vectors(vec![vec![1.0, 0.0, 0.0, 0.0],
-                                                    vec![0.0, 1.0, 0.0, 0.0],
-                                                    vec![0.0, 0.0, 1.0, 0.0],
-                                                    vec![0.0, 0.0, 0.0, 1.0]]);
-        identity
-    };
-}
-
-
 #[derive(Clone, Debug)]
 pub struct Matrix {
     rows: usize,
     columns: usize,
-    elements: [[f64; 4]; 4]
+    elements: [[f64; 4]; 4],
 }
 
 pub fn new(rows: usize, columns: usize) -> Matrix {
@@ -30,26 +18,48 @@ pub fn new(rows: usize, columns: usize) -> Matrix {
     Matrix {
         rows,
         columns,
-        elements: [[0.0; 4]; 4]
+        elements: [[0.0; 4]; 4],
     }
+}
+
+pub fn identity() -> Matrix {
+    let mut matrix = new(4, 4);
+    for i in 0..4 {
+        matrix[i][i] = 1.0;
+    }
+    let matrix = matrix;
+    matrix
 }
 
 pub fn from_vectors(rows: Vec<Vec<f64>>) -> Matrix {
     let n = rows.len();
-   if n == 0 {
-       panic!("Cannot create an empty matrix. Please supply at least a 1x1 square matrix.");
-   }
+    if n == 0 {
+        panic!("Cannot create an empty matrix. Please supply at least a 1x1 square matrix.");
+    }
     let mut matrix = new(n, n);
-   for i in 0..n {
-       if rows[i].len() != n {
-           panic!("You must provide a square (n x n) matrix as an argument")
-       }
-       for j in 0..n {
-           matrix[i][j] = rows[i][j];
-       }
-   }
-   let matrix = matrix;
-   matrix
+    for i in 0..n {
+        if rows[i].len() != n {
+            panic!("You must provide a square (n x n) matrix as an argument")
+        }
+        for j in 0..n {
+            matrix[i][j] = rows[i][j];
+        }
+    }
+    let matrix = matrix;
+    matrix
+}
+
+impl Matrix {
+    pub fn transpose(&self) -> Self {
+        let mut transposed = new(self.rows, self.columns);
+        for i in 0..self.rows {
+            for j in 0..self.columns {
+                transposed[i][j] = self[j][i];
+            }
+        }
+        let transposed = transposed;
+        transposed
+    }
 }
 
 impl Index<(usize)> for Matrix {
@@ -109,23 +119,6 @@ impl Mul<vector::Vector> for Matrix {
     }
 }
 
-impl Mul<IDENTITY> for Matrix {
-    type Output = Matrix;
-
-    fn mul(self, identity: IDENTITY) -> Matrix {
-        let mut product = new(self.rows, self.columns);
-        for row in 0..self.rows {
-            for column in 0..self.columns {
-                product[row][column] = self[row][0] * identity[0][column] +
-                    self[row][1] * identity[1][column] +
-                    self[row][2] * identity[2][column] +
-                    self[row][3] * identity[3][column];
-            }
-        }
-        product
-    }
-}
-
 impl PartialEq for Matrix {
     fn eq(&self, other: &Self) -> bool {
         if self.rows != other.rows || self.columns != other.columns {
@@ -162,10 +155,12 @@ mod matrix_tests {
 
     #[test]
     fn new_matrix_from_vectors() {
-        let matrix = matrix::from_vectors(vec![vec![1.0, 2.0, 3.0, 4.0],
-                                            vec![5.0, 6.0, 7.0, 8.0],
-                                            vec![9.0, 8.0, 7.0, 6.0],
-                                            vec![5.0, 4.0, 3.0, 2.0]]);
+        let matrix = matrix::from_vectors(vec![
+            vec![1.0, 2.0, 3.0, 4.0],
+            vec![5.0, 6.0, 7.0, 8.0],
+            vec![9.0, 8.0, 7.0, 6.0],
+            vec![5.0, 4.0, 3.0, 2.0],
+        ]);
 
         assert!(matrix[2][2].approx_eq(7.0, (0.0, 2)));
         assert!(matrix[3][1].approx_eq(4.0, (0.0, 2)));
@@ -175,9 +170,11 @@ mod matrix_tests {
     #[test]
     #[should_panic]
     fn new_matrix_from_non_square_vectors() {
-        let matrix = matrix::from_vectors(vec![vec![1.0, 2.0, 3.0],
-                                            vec![4.0, 5.0, 6.0],
-                                            vec![7.0, 8.0, 9.0, 10.0]]);
+        let matrix = matrix::from_vectors(vec![
+            vec![1.0, 2.0, 3.0],
+            vec![4.0, 5.0, 6.0],
+            vec![7.0, 8.0, 9.0, 10.0],
+        ]);
         assert!(matrix.rows == matrix.columns);
     }
 
@@ -201,9 +198,10 @@ mod matrix_tests {
     fn matrices_of_differing_size() {
         let matrix_small = matrix::from_vectors(vec![vec![-3.0, 5.0], vec![1.0, -2.0]]);
         let matrix_medium = matrix::from_vectors(vec![
-                                                vec![-3.0, 5.0, 0.0],
-                                                vec![1.0, -2.0, -7.0],
-                                                vec![0.0, 1.0, 1.0]]);
+            vec![-3.0, 5.0, 0.0],
+            vec![1.0, -2.0, -7.0],
+            vec![0.0, 1.0, 1.0],
+        ]);
 
 
         assert!(matrix_small[0][0].approx_eq(-3.0, (0.0, 2)));
@@ -238,16 +236,17 @@ mod matrix_tests {
     #[test]
     fn matrix_multiplication() {
         let matrix1 = matrix::from_vectors(vec![
-                                        vec![1.0, 2.0, 3.0, 4.0],
-                                        vec![5.0, 6.0, 7.0, 8.0],
-                                        vec![9.0, 8.0, 7.0, 6.0],
-                                        vec![5.0, 4.0, 3.0, 2.0]]);
+            vec![1.0, 2.0, 3.0, 4.0],
+            vec![5.0, 6.0, 7.0, 8.0],
+            vec![9.0, 8.0, 7.0, 6.0],
+            vec![5.0, 4.0, 3.0, 2.0],
+        ]);
         let matrix2 = matrix::from_vectors(vec![
-                                        vec![-2.0, 1.0, 2.0, 3.0],
-                                        vec![3.0, 2.0, 1.0, -1.0],
-                                        vec![4.0, 3.0, 6.0, 5.0],
-                                        vec![1.0, 2.0, 7.0, 8.0]]);
-
+            vec![-2.0, 1.0, 2.0, 3.0],
+            vec![3.0, 2.0, 1.0, -1.0],
+            vec![4.0, 3.0, 6.0, 5.0],
+            vec![1.0, 2.0, 7.0, 8.0],
+        ]);
 
 
         let matrix3 = matrix1 * matrix2;
@@ -261,10 +260,11 @@ mod matrix_tests {
     #[test]
     fn matrix_vector_multiplication() {
         let matrix1 = matrix::from_vectors(vec![
-                                        vec![1.0, 2.0, 3.0, 4.0],
-                                        vec![2.0, 4.0, 4.0, 2.0],
-                                        vec![8.0, 6.0, 4.0, 1.0],
-                                        vec![0.0, 0.0, 0.0, 1.0]]);
+            vec![1.0, 2.0, 3.0, 4.0],
+            vec![2.0, 4.0, 4.0, 2.0],
+            vec![8.0, 6.0, 4.0, 1.0],
+            vec![0.0, 0.0, 0.0, 1.0],
+        ]);
         let p1 = vector::build_point(1.0, 2.0, 3.0);
 
 
@@ -275,19 +275,48 @@ mod matrix_tests {
 
     #[test]
     fn identity_matrix_multiplication() {
-        let m1 = matrix::from_vectors(vec![vec![0.0, 1.0, 2.0, 4.0],
-                                                vec![1.0, 2.0, 4.0, 8.0],
-                                                vec![2.0, 4.0, 8.0, 16.0],
-                                                vec![4.0, 8.0, 16.0, 32.0]]);
-        let m2 = matrix::from_vectors(vec![vec![0.0, 1.0, 2.0, 4.0],
-                                                vec![1.3, 2.1, 4.4, 8.7],
-                                                vec![2.0, 7.1, 8.0, 16.0],
-                                                vec![4.0, 8.0, 16.0, 32.0]]);
+        let m1 = matrix::from_vectors(vec![
+            vec![0.0, 1.0, 2.0, 4.0],
+            vec![1.0, 2.0, 4.0, 8.0],
+            vec![2.0, 4.0, 8.0, 16.0],
+            vec![4.0, 8.0, 16.0, 32.0],
+        ]);
+        let m2 = matrix::from_vectors(vec![
+            vec![0.0, 1.0, 2.0, 4.0],
+            vec![1.3, 2.1, 4.4, 8.7],
+            vec![2.0, 7.1, 8.0, 16.0],
+            vec![4.0, 8.0, 16.0, 32.0],
+        ]);
 
-        let m3 = m1.clone() * matrix::IDENTITY.clone();        
-        let m4 = m2.clone() * matrix::IDENTITY.clone();        
+        let m3 = m1.clone() * matrix::identity();
+        let m4 = m2.clone() * matrix::identity();
 
         assert_eq!(m1, m3);
         assert_eq!(m2, m4);
+    }
+
+    #[test]
+    fn matrix_transpose() {
+        let m1 = matrix::from_vectors(vec![
+            vec![0.0, 9.0, 3.0, 0.0],
+            vec![9.0, 8.0, 0.0, 8.0],
+            vec![1.0, 8.0, 5.0, 3.0],
+            vec![0.0, 0.0, 5.0, 8.0],
+        ]);
+        let m2 = matrix::from_vectors(vec![
+            vec![0.0, 9.0, 1.0, 0.0],
+            vec![9.0, 8.0, 8.0, 0.0],
+            vec![3.0, 0.0, 5.0, 5.0],
+            vec![0.0, 8.0, 3.0, 8.0],
+        ]);
+
+        let m1 = m1.transpose();
+        assert_eq!(m1, m2);
+    }
+
+    #[test]
+    fn identity_transpose_is_identity() {
+        let identity = matrix::identity();
+        assert_eq!(identity, identity.transpose());
     }
 }

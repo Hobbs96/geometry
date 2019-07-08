@@ -1,19 +1,8 @@
 use crate::float_cmp::ApproxEq;
-use crate::lazy_static;
 use crate::vector;
 use core::ops::Index;
 use core::ops::IndexMut;
 use core::ops::Mul;
-
-lazy_static::lazy_static! {
-    static ref IDENTITY: Matrix = {
-        let identity = from_vectors(vec![vec![1.0, 0.0, 0.0, 0.0],
-                                                    vec![0.0, 1.0, 0.0, 0.0],
-                                                    vec![0.0, 0.0, 1.0, 0.0],
-                                                    vec![0.0, 0.0, 0.0, 1.0]]);
-        identity
-    };
-}
 
 
 #[derive(Clone, Debug)]
@@ -106,23 +95,6 @@ impl Mul<vector::Vector> for Matrix {
         } else {
             vector::build_vector(product[0][0], product[1][0], product[2][0])
         }
-    }
-}
-
-impl Mul<IDENTITY> for Matrix {
-    type Output = Matrix;
-
-    fn mul(self, identity: IDENTITY) -> Matrix {
-        let mut product = new(self.rows, self.columns);
-        for row in 0..self.rows {
-            for column in 0..self.columns {
-                product[row][column] = self[row][0] * identity[0][column] +
-                    self[row][1] * identity[1][column] +
-                    self[row][2] * identity[2][column] +
-                    self[row][3] * identity[3][column];
-            }
-        }
-        product
     }
 }
 

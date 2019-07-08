@@ -4,10 +4,6 @@ use core::ops::Index;
 use core::ops::IndexMut;
 use core::ops::Mul;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> matrix-rework
 #[derive(Clone, Debug)]
 pub struct Matrix {
     rows: usize,
@@ -63,6 +59,37 @@ impl Matrix {
         }
         let transposed = transposed;
         transposed
+    }
+
+    pub fn determinant(&self) -> f64 {
+        if self.rows > 2 || self.columns > 2 {
+            panic!("Determinants larger than 2x2 not currently supported");
+        }
+        self[0][0] * self[1][1] - self[0][1] * self[1][0]
+    }
+
+    pub fn submatrix(&self, row_to_remove: usize, column_to_remove: usize) -> Self {
+        if self.rows < 2 || self.columns < 2 {
+            panic!("Cannot get the submatrix of a matrix smaller than 2x2");
+        }
+        let mut sub = new(self.rows - 1, self.columns - 1);
+        let mut row_offset = 0;
+        for i in 0..self.rows {
+            if i != row_to_remove {
+                let mut column_offset = 0;
+                for j in 0..self.columns {
+                    if j != column_to_remove {
+                        sub[i - row_offset][j - column_offset] = self[i][j];
+                    } else {
+                        column_offset += 1;
+                    }
+                }
+            } else {
+                row_offset += 1;
+            }
+        }
+        let sub = sub;
+        sub
     }
 }
 
@@ -322,5 +349,35 @@ mod matrix_tests {
     fn identity_transpose_is_identity() {
         let identity = matrix::identity();
         assert_eq!(identity, identity.transpose());
+    }
+
+    #[test]
+    fn two_by_two_determinant() {
+        let m1 = matrix::from_vectors(vec![vec![1.0, 5.0], vec![-3.0, 2.0]]);
+        assert_eq!(17.0, m1.determinant());
+    }
+
+    #[test]
+    fn submatrix() {
+        let m1 = matrix::from_vectors(vec![
+            vec![1.0, 5.0, 0.0],
+            vec![-3.0, 2.0, 7.0],
+            vec![0.0, 6.0, -3.0],
+        ]);
+        let m1_sub = matrix::from_vectors(vec![vec![-3.0, 2.0], vec![0.0, 6.0]]);
+        let m2 = matrix::from_vectors(vec![
+            vec![-6.0, 1.0, 1.0, 6.0],
+            vec![-8.0, 5.0, 8.0, 6.0],
+            vec![-1.0, 0.0, 8.0, 2.0],
+            vec![-7.0, 1.0, -1.0, 1.0],
+        ]);
+        let m2_sub = matrix::from_vectors(vec![
+            vec![-6.0, 1.0, 6.0],
+            vec![-8.0, 8.0, 6.0],
+            vec![-7.0, -1.0, 1.0],
+        ]);
+
+        assert_eq!(m1_sub, m1.submatrix(0, 2));
+        assert_eq!(m2_sub, m2.submatrix(2, 1));
     }
 }

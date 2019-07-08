@@ -4,6 +4,10 @@ use core::ops::Index;
 use core::ops::IndexMut;
 use core::ops::Mul;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> matrix-rework
 #[derive(Clone, Debug)]
 pub struct Matrix {
     rows: usize,
